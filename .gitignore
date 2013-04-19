@@ -1,0 +1,98 @@
+# Numerous always-ignore extensions
+*.diff
+*.err
+*.orig
+*.log
+*.rej
+*.swo
+*.swp
+*.vi
+*~
+*.psd
+
+# OS or Editor folders
+.DS_Store
+Thumbs.db
+.cache
+.project
+.pydevproject
+.settings
+.tmproj
+*.esproj
+nbproject
+*.sublime-project
+*.sublime-workspace
+
+# Dreamweaver added files
+_notes
+dwsync.xml
+
+# Komodo
+*.komodoproject
+.komodotools
+
+# Folders to ignore
+.hg
+.svn
+.CVS
+intermediate
+publish
+.idea
+
+# build script local files
+build/buildinfo.properties
+build/config/buildinfo.properties
+
+# Unit test / coverage reports
+.coverage
+.tox
+
+#Translations
+*.mo
+
+#Mr Developer
+.mr.developer.cfg
+
+# Robin
+node_modules
+robyn-local.json
+
+# Caboose
+.bundle
+*.sass-cache
+resources/compass/gems
+# Avoid committing generated CSS
+project/static/css/*.css
+project/static/css/*/*.css
+project/static/css/*/*/*.css
+# Python
+*.py[co]
+env
+# Packages
+*.egg
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+# Installer logs
+pip-log.txt
+# Django
+*.pot
+*.pyc
+local_settings.py
+# Avoid committing minified JS
+project/static/js/*.min.js
+project/static/js/*/*.min.js
+project/static/js/*/*/*.min.js
+
+/uploads/*
+/collected-static/*
+
+docs/_build/*
+
