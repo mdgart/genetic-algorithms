@@ -14,7 +14,7 @@ class Chromosome(object):
         self.code = ""
         while length:
             length -= 1
-            self.code += unichr(random.randint(0,255))
+            self.code += unichr(random.randint(0,127))
 
     def calculate_cost(self, model):
         # calculate the cost (smaller is better)
@@ -26,9 +26,9 @@ class Chromosome(object):
         self.cost = total
 
     def mate(self, chromosome):
-        half_length = len(chromosome) / 2
-        child1 = "%s%s" % (self.code[:half_length], chromosome[half_length:])
-        child2 = "%s%s" % (chromosome[:half_length], self.code[half_length:])
+        half_length = len(chromosome.code) / 2
+        child1 = "%s%s" % (self.code[:half_length], chromosome.code[half_length:])
+        child2 = "%s%s" % (chromosome.code[:half_length], self.code[half_length:])
         return [Chromosome(child1), Chromosome(child2)]
 
     def mutate(self, chance):
@@ -37,9 +37,15 @@ class Chromosome(object):
         index = int(random.random() * len(self.code))
         direction = -1 if random.random() > 0.5 else +1
         chromosome = list(self.code)
-        chromosome[index] = unichr(ord(chromosome[index]) + direction)
+        char_ord = ord(chromosome[index]) + direction
+        # prevent overflow
+        if char_ord > 127:
+            char_ord = 127
+        if char_ord < 0:
+            char_ord = 0
+        
+        chromosome[index] = chr(char_ord)
         self.code = "".join(chromosome)
-
 
 
 class Population(object):
@@ -62,31 +68,24 @@ class Population(object):
             member.calculate_cost(self.goal)
 
         self.sort_population()
-        print self.members
 
+        # mate
         children = self.members[0].mate(self.members[1])
+        len_members = len(self.members)
+        self.members[len_members-2] = children[0]
+        self.members[len_members-1] = children[1]
 
-        ## to be finished
+        for i in range(0, len_members):
+            print self.members[i].code
+            self.members[i].mutate(0.5)
+            self.members[i].calculate_cost(self.goal)
+            if self.members[i].code == self.goal:
+                self.sort_population()
+                print "Generation:%s  Code:%s" % (self.generation_number, self.goal)
+                return True
+        self.generation_number += 1
+        self.generation()
 
 
-if __name__ == "__main__":
-    """
-    g1 = Chromosome()
-    g1.randomize(12)
-    g1.calculate_cost("Hello World!")
-    print g1.cost
-    children = g1.mate("asdfghjklqwe")
-    print children[0].code
-    print children[1].code
-
-    g2 = Chromosome("1234567890qw")
-    children = g2.mate("asdfghjklzxc")
-    print children[0].code
-    print children[1].code
-    g2.mutate(1)
-    print g2.code
-    """
-
-    p1 = Population("Hello, world!", 20)
-    for member in p1.members:
-        print u"%s" % member.code
+population = Population("Hello, World!", 30)
+population.generation()
