@@ -43,7 +43,7 @@ class Chromosome(object):
             char_ord = 127
         if char_ord < 0:
             char_ord = 0
-        
+
         chromosome[index] = chr(char_ord)
         self.code = "".join(chromosome)
 
@@ -53,6 +53,7 @@ class Population(object):
         self.members = []
         self.goal = goal
         self.generation_number = 0
+        self.goalReached = False
 
         while size:
             chromosome = Chromosome()
@@ -64,27 +65,28 @@ class Population(object):
         self.members.sort(key=lambda x: x.cost)
 
     def generation(self):
-        for member in self.members:
-            member.calculate_cost(self.goal)
+        while not self.goalReached:
+            for member in self.members:
+                member.calculate_cost(self.goal)
 
-        self.sort_population()
+            self.sort_population()
 
-        # mate
-        children = self.members[0].mate(self.members[1])
-        len_members = len(self.members)
-        self.members[len_members-2] = children[0]
-        self.members[len_members-1] = children[1]
+            # mate
+            children = self.members[0].mate(self.members[1])
+            len_members = len(self.members)
+            self.members[len_members-2] = children[0]
+            self.members[len_members-1] = children[1]
 
-        for i in range(0, len_members):
-            print self.members[i].code
-            self.members[i].mutate(0.5)
-            self.members[i].calculate_cost(self.goal)
-            if self.members[i].code == self.goal:
-                self.sort_population()
-                print "Generation:%s  Code:%s" % (self.generation_number, self.goal)
-                return True
-        self.generation_number += 1
-        self.generation()
+            for i in range(0, len_members):
+                print self.members[i].code
+                self.members[i].mutate(0.5)
+                self.members[i].calculate_cost(self.goal)
+                if self.members[i].code == self.goal:
+                    self.goalReached = True
+                    self.sort_population()
+                    print "Generation:%s  Code:%s" % (self.generation_number, self.goal)
+                    return True
+            self.generation_number += 1
 
 
 population = Population("Hello, World!", 30)
